@@ -1,6 +1,6 @@
 'use client'
-import { useState, useEffect } from 'react'
 import Head from 'next/head'
+import { useEffect, useState } from 'react'
 
 interface TaskItem {
   id: string
@@ -60,7 +60,7 @@ export default function Home() {
 
   // Initialize or reset daily data
   useEffect(() => {
-    const today = new Date().toDateString()
+   const today = getEffectiveDate()
     setCurrentDate(today)
     
     // Check if we're in a browser environment
@@ -156,6 +156,13 @@ export default function Home() {
     const completed = dayData.tasks.filter(task => task.completed).length
     return Math.round((completed / dayData.tasks.length) * 100)
   }
+  const getEffectiveDate = () => {
+  const now = new Date()
+  // Shift back by 3 hours so 00:00–02:59 still counts as previous day
+  now.setHours(now.getHours() - 4)
+  return now.toDateString()
+}
+
 
   const groupedTasks = defaultTasks.reduce((acc, task) => {
     if (!acc[task.category]) {
